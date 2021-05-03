@@ -57,5 +57,17 @@ def test_info(client):
     print(resp.json)
     assert resp.json['coursename'] == COURSE_WEAVING['coursename']
     assert resp.json['numberlectures'] == COURSE_WEAVING['numberlectures']
+
+def test_delete(client):
+    resp = client.post('/api/course', json=COURSE_WEAVING)
+    assert resp.status_code == 200
+    course_id = resp.json['course_id']
+
+    resp = client.delete(f'/api/course/{course_id}')
+    assert resp.status_code == 200
+
+    resp = client.delete(f'/api/course/{course_id}')
+    assert resp.status_code == 404
+
 if __name__ == '__main__':
     pass

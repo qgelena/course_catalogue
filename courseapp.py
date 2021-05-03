@@ -70,6 +70,17 @@ def create_app(sqlitepath='sqlite://'):
             return jsonify({'error':'not found', 'course': id}), 404
         return jsonify(course) 
 
+    # Видалення курсу (delete)
+    @app.route('/api/course/<int:id>', methods=['DELETE'])
+    def course_delete(id):
+        
+        course = models.Course.query.get(id)
+        if course is None:
+            return jsonify({'error':'not found', 'course':id}), 404
+        db.session.delete(course)
+        db.session.commit()
+
+        return jsonify({'status':'ok'})
 
     db.init_app(app)
 
@@ -84,10 +95,8 @@ def create_app(sqlitepath='sqlite://'):
 
 
     # Зміна атрибутів курсу (update)
-    #@app.route('/api/course/<id>', methods=[PATCH])
+    #@app.route('/api/course/<id>', methods=['PATCH'])
      
-    # Видалення курсу (delete)
-    #@app.route('/api/course/<id>', methods=[DELETE])
 
 if __name__ == '__main__':
     basedir = Path(__file__).absolute().parent
