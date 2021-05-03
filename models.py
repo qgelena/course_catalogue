@@ -1,8 +1,11 @@
+from dataclasses import dataclass
+from datetime import date
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
+@dataclass
 class Course(db.Model):
     """Таблиця з курсами 
 
@@ -12,6 +15,11 @@ class Course(db.Model):
     * Дата закінчення 
     * Кількість лекцій
     """
+    id: int
+    coursename: str
+    startdate: date
+    finishdate: date
+    numberlectures: int
 
     id = db.Column(db.Integer, primary_key=True)
     coursename = db.Column(db.String(), nullable =False)

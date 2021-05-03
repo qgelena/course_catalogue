@@ -32,8 +32,7 @@ def create_app(sqlitepath='sqlite://'):
     def course_list():
         """App route function for the homepage with a list of courses"""
         Course = models.Course
-        data = Course.query.all()  
-        print(data)
+        data = Course.query.all()
         return jsonify({'status': 'ok', 'courses': data})
 
     # Додавання курсу в каталог (create)
