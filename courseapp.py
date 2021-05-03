@@ -60,28 +60,34 @@ def create_app(sqlitepath='sqlite://'):
             "status":"ok",
             "course_id": course.id
         })
-    
+
+    # Відображення деталей курсу по id (детальна сторінка)
+    # курсу повинна відображати повну інформацію про курс) (read)
+    @app.route('/api/course/<int:id>', methods=['GET'])
+    def course_info(id):
+        course = models.Course.query.get(id)
+        if course is None:
+            return jsonify({'error':'not found', 'course': id}), 404
+        return jsonify(course) 
+
+
     db.init_app(app)
 
     with app.app_context():
         db.create_all()
     return app
 
-    # Відображення деталей курсу по id (детальна сторінка)
-    # курсу повинна відображати повну інформацію про курс) (read)
-    #@app.route('api/course/<id>', methods=[GET])
-
     # Пошук курсу за назвою і фільтр по датах (search)
-    @app.route('api/searchcourse', methods=['GET'])
+    @app.route('/api/searchcourse', methods=['GET'])
     def searchcourse():
         pass
 
 
     # Зміна атрибутів курсу (update)
-    #@app.route('api/course/<id>', methods=[PATCH])
+    #@app.route('/api/course/<id>', methods=[PATCH])
      
     # Видалення курсу (delete)
-    #@app.route('api/course/<id>', methods=[DELETE])
+    #@app.route('/api/course/<id>', methods=[DELETE])
 
 if __name__ == '__main__':
     basedir = Path(__file__).absolute().parent

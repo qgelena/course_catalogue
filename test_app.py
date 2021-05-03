@@ -6,6 +6,13 @@ import pytest
 import courseapp
 import models
 
+COURSE_WEAVING = {
+    'coursename': 'underwater basket weaving',
+    'startdate': '2021-05-01',
+    'finishdate': '2021-11-01',
+    'numberlectures': 42
+}
+
 @pytest.fixture
 def client():
     app = courseapp.create_app()
@@ -26,12 +33,7 @@ def test_empty_db(client):
     assert rv.json['courses'] == []
 
 def test_db(client):
-    resp = client.post('/api/course', json={
-        'coursename': 'underwater basket weaving',
-        'startdate': '2021-05-01',
-        'finishdate': '2021-11-01',
-        'numberlectures': 42
-    })
+    resp = client.post('/api/course', json=COURSE_WEAVING)
     assert resp.status_code == 200
 
     resp = client.get('/api/course')
@@ -40,6 +42,20 @@ def test_db(client):
     assert len(courses) == 1
     assert courses[0]['coursename'] == 'underwater basket weaving'
 
+def test_info(client):
+    # test non-existing course id
+    resp = client.get('/api/course/1')
+    assert resp.status_code == 404
 
+    # create a course and remember its id
+    resp = client.post('/api/course', json=COURSE_WEAVING)
+    assert resp.status_code == 200
+    course_id = resp.json['course_id']
+    # get its info back
+    resp = client.get('/api/course/' + str(course_id))
+    assert resp.status_code == 200
+    print(resp.json)
+    assert resp.json['coursename'] == COURSE_WEAVING['coursename']
+    assert resp.json['numberlectures'] == COURSE_WEAVING['numberlectures']
 if __name__ == '__main__':
     pass
