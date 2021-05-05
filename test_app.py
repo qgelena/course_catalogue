@@ -125,8 +125,21 @@ def test_search_with_date(client):
     course = resp.json[0]
     assert course['coursename'] == 'underwater extreme ironing'
 
-def test_change():
-    pass
+def test_change(client):
+    resp = client.post('/api/course', json=COURSE_WEAVING)
+    assert resp.status_code == 200
+    course_id = resp.json['course_id']
+
+    resp = client.patch('/api/course/' + str(course_id), json={
+        'coursename':'intro to underwater basket weaving',
+        'startdate':'2021-05-15',
+        'numberlectures': 66
+    })
+    assert resp.status_code == 200
+    print('respJSON:', resp.json)
+    course = resp.json
+    assert course['coursename'] == 'intro to underwater basket weaving'
+    assert course['numberlectures'] == 66
 
 if __name__ == '__main__':
     pass

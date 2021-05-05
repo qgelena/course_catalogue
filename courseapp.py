@@ -111,12 +111,33 @@ def create_app(sqlitepath='sqlite://'):
         return jsonify(results)
 
     # Зміна атрибутів курсу (update)
-    @app.route('/api/course/<id>', methods=['PATCH'])
-    def coursechange():
-        pass
+    @app.route('/api/course/<int:id>', methods=['PATCH'])
+    def coursechange(id):
+        course = Course.query.get(id)
+        if course is None:
+            return jsonify({'error':'not found', 'course': id}), 404
+
+        #print('course:', course)
+        #print('r_json:', request.json)
+        #print('coursename:', course.coursename)
+
+        if 'coursename' in request.json:
+            course.coursename = request.json['coursename']
+        if 'startdate' in request.json:
+            date = datetime.strptime(request.json['startdate'], '%Y-%m-%d').date()
+            course.startdate = date
+        if 'finishdate' in request.json:
+            date = datetime.strptime(request.json['finishdate'], '%Y-%m-%d').date()
+            course.finishdate = date
+        if 'numberlectures' in request.json:
+            course.numberlectures = request.json['numberlectures']
+
+        db.session.commit()
+
+        return jsonify(course)
 
 
-    db.init_app(app)
+    db.init_app(app)  
 
     with app.app_context():
         db.create_all()
