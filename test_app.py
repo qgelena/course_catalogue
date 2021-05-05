@@ -136,7 +136,7 @@ def test_change(client):
         'numberlectures': 66
     })
     assert resp.status_code == 200
-    print('respJSON:', resp.json)
+    #print('respJSON:', resp.json)
     course = resp.json
     assert course['coursename'] == 'intro to underwater basket weaving'
     assert course['numberlectures'] == 66
